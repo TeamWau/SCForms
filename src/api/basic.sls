@@ -141,9 +141,9 @@
      fl-oval3d-embossedbox))
 
   (define (fl-is-upbox? t)
-    (memq t (list fl-up-box fl-oval3d-upbox fl-rounded3d-upbox)))
+    (c-if (memq t (list fl-up-box fl-oval3d-upbox fl-rounded3d-upbox))))
   (define (fl-is-downbox? t)
-    (memq t (list fl-down-box fl-oval3d-downbox fl-rounded3d-downbox)))
+    (c-if (memq t (list fl-down-box fl-oval3d-downbox fl-rounded3d-downbox))))
   (define (fl-to-downbox? t)
     (cond
      ((= t fl-up-box) fl-down-box)
@@ -508,8 +508,9 @@
   (define fl-font-style fl-text-style)
 
   (define (special-style? a)
-    (and (>= a fl-shadow-style)
-         (<= a (+ fl-embossed-style fl-maxfonts))))
+    (c-if
+     (and (>= a fl-shadow-style)
+          (<= a (+ fl-embossed-style fl-maxfonts)))))
 
   (defines
    (fl-tiny-size 8)
@@ -524,5 +525,89 @@
 
   (define fl-click-timeout 400)
 
-  ;; to be continued
+  ;; Yow!
+  (define-foreign-struct fl-object
+    (fields
+     (pointer form)
+     (pointer u-vdata)
+     (pointer u-cdata)
+     (long u-ldata)
+     (int objclass)
+     (int type)
+     (int boxtype)
+     (fl-coord x y z w h)
+     (double fl1 fr1 ft1 fb1 fl2 fr2 ft2 fb2)
+     (fl-coord bw)
+     (fl-color col1 col2)
+     (pointer label)
+     (fl-color lcol)
+     (int align)
+     (int lsize lstyle)
+     (pointer shortcut)
+     (pointer handle)
+     (pointer object_callback)
+     (long argument)
+     (pointer spec)
+     (pointer prehandle)
+     (pointer posthandle)
+     (pointer set_return)
+     (unsigned-int resize)
+     (unsigned-int nwgravity)
+     (unsigned-int segravity)
+     (pointer prev)
+     (pointer next)
+     (pointer parent)
+     (pointer child)
+     (pointer nc)
+     (pointer flpixmap)
+     (int use_pixmap)
+     (int returned)
+     (unsigned-int how-return)
+     (int double-buffer)
+     (int pushed)
+     (int focus)
+     (int belowmouse)
+     (int active)
+     (int input)
+     (int wantkey)
+     (int radio)
+     (int automatic)
+     (int redraw)
+     (int visible)
+     (int is_under)
+     (int click)
+     (unsigned-long click-timeout)
+     (pointer c-vdata)
+     (pointer c-cdata)
+     (long c-ldata)
+     (fl-color dbl-background)
+     (pointer tooltip)
+     (int tipID)
+     (int group-id)
+     (int want-motion)
+     (int want-update))
+
+    (defines
+      (fl-formcallbackptr pointer)
+      (fl-callbackptr pointer)
+      (fl-raw-callback pointer)
+      (fl-form-atclose pointer)
+      (fl-form-atdeactivate pointer)
+      (fl-form-atactivate pointer)
+      (fl-handleptr pointer)
+      (fl-error-func pointer)
+      (fl-event pointer))
+
+;;; Form
+    (defines
+      (fl-being-hidden -1)
+      (fl-hidden 0)
+      (fl-invisible fl-hidden)
+      (fl-visible 1))
+
+    (define-foreign-struct fl-form
+      (fields
+       ;; to be continued
+       ))
+    )
   )

@@ -20,6 +20,8 @@
           (cons start
                 (range (+ start step) end step))))))
 
+  (define (c-if value)
+    (if value 1 0))
 
 ;;;; Helper macros
 
