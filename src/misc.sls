@@ -6,7 +6,11 @@
 
 ;;;; Helper procedures
 
-  (define (void . args)
+  (define (add1 n) (+ n 1))
+  (define (sub1 n) (- n 1))
+
+  ;; Renamed to avoid clash with C void
+  (define (void* . args)
     (if #f 'fnord))
 
   (define range
@@ -28,7 +32,7 @@
   (define-syntax define-syntax-rule
     (syntax-rules ()
       ((_ (id . args) body body* ...)
-       (define-syntax name
+       (define-syntax id
          (syntax-rules ()
            ((id . args)
             (begin body body* ...)))))))
@@ -41,10 +45,15 @@
   
   (define-syntax-rule (comment ignored ...)
     (values))
+
+  (define-syntax-rule (do-times n body body* ...)
+    (do ((i n (sub1 i)))
+        ((zero? i))
+      body body* ...))
   
   (define-syntax defines
     (syntax-rules ()
-      ((_) (void))
+      ((_) (void*))
       ((_ (id val) (id* val*) ...)
        (begin
          (define id val)
@@ -54,4 +63,7 @@
 ;;; which is overkill for our needs.
   (define-syntax-rule (define-enum n (vals ...))
     (define-values (vals ...)
-      (apply values (range n (length (quote (vals ...))))))))
+      (apply values (range n (length (quote (vals ...)))))))
+
+  (define-syntax-rule (define-foreign-procedure id object return symbol (args ...))
+    (define id (foreign-procedure object return symbol (args ...)))))

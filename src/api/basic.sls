@@ -12,7 +12,7 @@
           (pffi))
 
 ;;;; XForms API as of v1.4
-  
+
 ;;; Constant values
   (defines
     (fl-on 1)
@@ -165,18 +165,14 @@
     (fl-align-inside (bitwise-arithmetic-shift-left 1 13))
     (fl-align-vert (bitwise-arithmetic-shift-left 1 14)))
 
-  (define fl-is-inside-lalign
-    (foreign-procedure xforms
-                       int fl_is_inside_lalign (int)))
-  (define fl-is-outside-lalign
-    (foreign-procedure xforms
-                       int fl_is_outside_lalign (int)))
-  (define fl-to-inside-lalign
-    (foreign-procedure xforms
-                       int fl_to_inside_lalign (int)))
-  (define fl-to-outside-lalign
-    (foreign-procedure xforms
-                       int fl_to_outside_lalign (int)))
+  (define-foreign-procedure fl-is-inside-lalign xforms
+    int fl_is_inside_lalign (int))
+  (define-foreign-procedure fl-is-outside-lalign xforms
+    int fl_is_outside_lalign (int))
+  (define-foreign-procedure fl-to-inside-lalign xforms
+    int fl_to_inside_lalign (int))
+  (define-foreign-procedure fl-to-outside-lalign xforms
+    int fl_to_outside_lalign (int))
 
 ;;; Mouse buttons
   (define-enum 1
@@ -484,17 +480,17 @@
      fl-bold-style
      fl-italic-style
      fl-bolditalic-style
-                         
+
      fl-fixed-style
      fl-fixedbold-style
      fl-fixeditalic-style
      fl-fixedbolditalic-style
-                         
+
      fl-times-style
      fl-timesbold-style
      fl-timesitalic-style
      fl-timesbolditalic-style
-                         
+
      fl-misc-style
      fl-miscbold-style
      fl-miscitalic-style
@@ -504,8 +500,6 @@
     (fl-shadow-style (bitwise-arithmetic-shift-left 1 9))
     (fl-engraved-style (bitwise-arithmetic-shift-left 1 10))
     (fl-embossed-style (bitwise-arithmetic-shift-left 1 11)))
-
-  (define fl-font-style fl-text-style)
 
   (define (special-style a)
     (c-if
@@ -671,136 +665,169 @@
     (fl-except 4))
 
   (define fl-io-callback pointer)
-  (define fl-add-io-callback
-    (foreign-procedure xforms
-                       void fl_add_io_callback (int unsigned-int fl-io-callback pointer)))
-  (define fl-remove-io-callback
-    (foreign-procedure xforms
-                       void fl_remove_io_callback (int unsigned-int fl-io-callback)))
+  (define-foreign-procedure fl-add-io-callback xforms
+    void fl_add_io_callback (int unsigned-int fl-io-callback pointer))
+  (define-foreign-procedure fl-remove-io-callback xforms
+    void fl_remove_io_callback (int unsigned-int fl-io-callback))
 
 ;;; Signals
   (define fl-signal-handler pointer)
-  (define fl-add-signal-callback
-    (foreign-procedure xforms
-                       void fl_add_signal_callback (int fl-signal-handler pointer)))
-  (define fl-remove-signal-callback
-    (foreign-procedure xforms
-                       void fl_signal_callback (int)))
-  (define fl-signal-caught
-    (foreign-procedure xforms
-                       void fl_signal_caught (int)))
-  (define fl-app-signal-direct
-    (foreign-procedure xforms
-                       void fl_app_signal_direct (int)))
+  (define-foreign-procedure fl-add-signal-callback xforms
+    void fl_add_signal_callback (int fl-signal-handler pointer))
+  (define-foreign-procedure fl-remove-signal-callback xforms
+    void fl_signal_callback (int))
+  (define-foreign-procedure fl-signal-caught xforms
+    void fl_signal_caught (int))
+  (define-foreign-procedure fl-app-signal-direct xforms
+    void fl_app_signal_direct (int))
   (define-enum 0
     (fl-input-end-event-classic
      fl-input-end-event-always))
 
-  (define fl-input-end-return-handling
-    (foreign-procedure xforms
-                       int fl_input_end_return_handling (int)))
+  (define-foreign-procedure fl-input-end-return-handling xforms
+    int fl_input_end_return_handling (int))
 
 ;;; Timeouts
   (define fl-timeout-callback pointer)
-  (define fl-add-timeout
-    (foreign-procedure xforms
-                       int fl_add_timeout (long fl-timeout-callback pointer)))
-  (define fl-remove-timeout
-    (foreign-procedure xforms
-                       void (int)))
+  (define-foreign-procedure fl-add-timeout xforms
+    int fl_add_timeout (long fl-timeout-callback pointer))
+  (define-foreign-procedure fl-remove-timeout xforms
+    void fl_remove_timeout (int))
 
 ;;; Public routines
   (define fl-library-version
-    (foreign-procedure xforms
-                       int fl_library_version (pointer pointer)))
-  (define fl-library-version
-    (foreign-procedure xforms
-                       long fl_library_full_version (pointer pointer pointer pointer)))
+    foreign-foreign-procedure-proce fl_library_version (pointer pointer))
+  (define-foreign-procedure fl-library-version xforms
+    long fl_library_full_version (pointer pointer pointer pointer))
 
 ;;; Generic routines
-  (define fl-bgn-form
-    (foreign-procedure xforms
-                       pointer fl_bgn_form (int fl-coord fl-coord)))
-  (define fl-end-form
-    (foreign-procedure xforms
-                       void fl_end_form (void)))
-  (define fl-do-forms
-    (foreign-procedure xforms
-                       pointer fl_do_forms (void)))
-  (define fl-check-forms
-    (foreign-procedure xforms
-                       pointer fl_check_forms (void)))
-  (define fl-do-only-forms
-    (foreign-procedure xforms
-                       pointer fl_do_only_forms (void)))
-  (define fl-freeze-form
-    (foreign-procedure xforms
-                       void fl_freeze_form (pointer)))
-  (define fl-set-focus-object
-    (foreign-procedure xforms
-                       void fl_set_focus_object (pointer pointer)))
-  (define fl-get-focus-object
-    (foreign-procedure xforms
-                       pointer fl_get_focus_object (pointer)))
-  (define fl-reset-focus-object
-    (foreign-procedure xforms
-                       void fl_reset_focus_object (pointer)))
-  (define fl-set-form-atclose
-    (foreign-procedure xforms
-                       fl-form-atclose fl_set_form_atclose (pointer fl-form-atclose pointer)))
-  (define fl-set-atclose
-    (foreign-procedure xforms
-                       fl-form-atclose fl_set_atclose (fl-form-atclose pointer)))
-  (define fl-set-form-atactivate
-    (foreign-procedure xforms
-                       fl-form-atactivate fl_set_form_atactivate (pointer fl-form-atactivate pointer)))
-  (define fl-unfreeze-form
-    (foreign-procedure xforms
-                       void fl_unfreeze_form (pointer)))
-  (define fl-form-is-activated
-    (foreign-procedure xforms
-                       int fl_form_is_activated (pointer)))
-  (define fl-deactivate-form
-    (foreign-procedure xforms
-                       void fl_deactivate_form (pointer)))
-  (define fl-activate-form
-    (foreign-procedure xforms
-                       void fl_activate_form (pointer)))
-  (define fl-deactivate-all-forms
-    (foreign-procedure xforms
-                       void fl_deactivate_all_forms (void)))
-  (define fl-activate-all-forms
-    (foreign-procedure xforms
-                       void fl_activate_all_forms (void)))
-  (define fl-freeze-all-forms
-    (foreign-procedure xforms
-                       void fl_freeze_all_forms (void)))
-  (define fl-unfreeze-all-forms
-    (foreign-procedure xforms
-                       void fl_unfreeze_all_forms (void)))
-  (define fl-scale-form
-    (foreign-procedure xforms
-                       void fl_scale_form (pointer double double)))
-  (define fl-set-form-position
-    (foreign-procedure xforms
-                       void fl_set_form_position (pointer fl-coord fl-coord)))
-  (define fl-set-form-title
-    (foreign-procedure xforms
-                       void fl_set_form_title (pointer pointer)))
-  (define fl-set-form-title-f
-    (foreign-procedure xforms
-                       void fl_set_form_title_f (pointer pointer ...))) ; varargs
-  (define fl-set-app-mainform
-    (foreign-procedure xforms
-                       void fl_set_app_mainform (pointer)))
-  (define fl-get-app-mainform
-    (foreign-procedure xforms
-                       pointer fl_get_app_mainform (void)))
-  (define fl-set-app-nomainform
-    (foreign-procedure xforms
-                       void fl_set_app_nomainform (pointer)))
-  (define fl-set-form-callback
-    (foreign-procedure xforms
-                       void fl_set_form_callback (pointer fl-formcallbackptr pointer)))
-  ;; ...
+  (define-foreign-procedure fl-bgn-form xforms
+    pointer fl_bgn_form (int fl-coord fl-coord))
+  (define-foreign-procedure fl-end-form xforms
+    void fl_end_form (void))
+
+  (define-foreign-procedure fl-do-forms xforms
+    pointer fl_do_forms (void))
+  (define-foreign-procedure fl-check-forms xforms
+    pointer fl_check_forms (void))
+  (define-foreign-procedure fl-do-only-forms xforms
+    pointer fl_do_only_forms (void))
+
+  (define-foreign-procedure fl-freeze-form xforms
+    void fl_freeze_form (pointer))
+  (define-foreign-procedure fl-unfreeze-form xforms
+    void fl_unfreeze_form (pointer))
+  (define-foreign-procedure fl-freeze-all-forms xforms
+    void fl_freeze_all_forms (void))
+  (define-foreign-procedure fl-unfreeze-all-forms xforms
+    void fl_unfreeze_all_forms (void))
+
+  (define-foreign-procedure fl-set-focus-object xforms
+    void fl_set_focus_object (pointer pointer))
+  (define-foreign-procedure fl-get-focus-object xforms
+    pointer fl_get_focus_object (pointer))
+  (define-foreign-procedure fl-reset-focus-object xforms
+    void fl_reset_focus_object (pointer))
+
+  (define-foreign-procedure fl-set-form-atclose xforms
+    fl-form-atclose fl_set_form_atclose (pointer fl-form-atclose pointer))
+  (define-foreign-procedure fl-set-atclose xforms
+    fl-form-atclose fl_set_atclose (fl-form-atclose pointer))
+
+  (define-foreign-procedure fl-set-form-atactivate xforms
+    fl-form-atactivate fl_set_form_atactivate (pointer fl-form-atactivate pointer))
+  (define-foreign-procedure fl-form-is-activated xforms
+    int fl_form_is_activated (pointer))
+  (define-foreign-procedure fl-deactivate-form xforms
+    void fl_deactivate_form (pointer))
+  (define-foreign-procedure fl-activate-form xforms
+    void fl_activate_form (pointer))
+  (define-foreign-procedure fl-deactivate-all-forms xforms
+    void fl_deactivate_all_forms (void))
+  (define-foreign-procedure fl-activate-all-forms xforms
+    void fl_activate_all_forms (void))
+
+  (define-foreign-procedure fl-scale-form xforms
+    void fl_scale_form (pointer double double))
+  (define-foreign-procedure fl-set-form-position xforms
+    void fl_set_form_position (pointer fl-coord fl-coord))
+
+  (define-foreign-procedure fl-set-form-title xforms
+    void fl_set_form_title (pointer pointer))
+  ;; (define-foreign-procedure fl-set-form-title-f xforms
+  ;;   void fl_set_form_title_f (pointer pointer ...))
+
+  (define-foreign-procedure fl-set-app-mainform xforms
+    void fl_set_app_mainform (pointer))
+  (define-foreign-procedure fl-get-app-mainform xforms
+    pointer fl_get_app_mainform (void))
+  (define-foreign-procedure fl-set-app-nomainform xforms
+    void fl_set_app_nomainform (pointer))
+
+  (define-foreign-procedure fl-set-form-callback xforms
+    void fl_set_form_callback (pointer fl-formcallbackptr pointer))
+
+  (define-foreign-procedure fl-set-form-size xforms
+    void fl_set_form_size (pointer fl-coord fl-coord))
+  (define-foreign-procedure fl-set-form-minsize xforms
+    void fl_set_form_minsize (pointer fl-coord fl-coord))
+  (define-foreign-procedure fl-set-form-maxsize xforms
+    void fl_set_form_maxsize (pointer fl-coord fl-coord))
+  (define-foreign-procedure fl-adjust-form-size xforms
+    double fl_adjust_form_size (pointer))
+
+  (define-foreign-procedure fl-set-form-background-color xforms
+    void fl_set_form_background_color (pointer))
+  (define-foreign-procedure fl-get-form-background-color xforms
+    fl-color fl_get_form_background_color (pointer))
+
+  (define-foreign-procedure fl-set-form-hotspot xforms
+    fl-void fl_set_form_hotspot (pointer fl-coord fl-coord))
+  (define-foreign-procedure fl-set-form-hotobject xforms
+    void fl_set_form_hotobject (pointer pointer))
+
+  (define-foreign-procedure fl-set-form-event-cmask xforms
+    unsigned-long fl_get_form_event_cmask (pointer))
+
+  (define-foreign-procedure fl_set_form_geometry xforms
+    void fl_set_form_geometry (pointer fl-coord fl-coord fl-coord fl-coord))
+
+  (define-foreign-procedure fl-show-form xforms
+    window fl_show_form (pointer int int pointer))
+  ;; (define-foreign-procedure fl-show-form-f xforms
+  ;;   window (pointer int int pointer ...))
+  (define-foreign-procedure fl-hide-form xforms
+    void fl_hide_form (pointer))
+  (define-foreign-procedure fl-free-form xforms
+    void fl_free_form (pointer))
+  (define-foreign-procedure fl-form-is-visible xforms
+    int fl_form_is_visible (pointer))
+
+  (define-foreign-procedure fl-redraw-form xforms
+    void fl_redraw_form (pointer))
+  (define-foreign-procedure fl-set-form-dblbuffer xforms
+    void fl_set_form_dblbuffer (pointer int))
+
+  (define-foreign-procedure fl-prepare-form-window xforms
+    window fl_prepare_form_window (pointer int int pointer))
+  ;; (define-foreign-procedure fl-prepare-form-window-f xforms
+  ;;   window fl_prepare_form_window_f (pointer int int pointer ...))
+  (define-foreign-procedure fl-show-form-window xforms
+    window fl_show_form_window (pointer))
+
+  (define-foreign-procedure fl-form-is-iconified xforms
+    int fl_form_is_iconified (pointer))
+
+  (define-foreign-procedure fl-register-raw-callback xforms
+    fl-raw-callback fl_register_raw_callback (pointer unsigned-long fl-raw-callback))
+
+  (define-foreign-procedure fl-bgn-group xforms
+    pointer fl_bgn_group (void))
+  (define-foreign-procedure fl_end_group xforms
+    void fl_end_group (void))
+  (define-foreign-procedure fl-addto-group xforms
+    pointer fl_addto_group (pointer))
+
+;;; FL_OBJECT routines
+;;; ...
   )
