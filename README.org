@@ -1,0 +1,3 @@
+* SCForms
+SCForms is a new project aiming to provide a simple GUI library for R6RS
+Scheme, based on the venerable XForms toolkit.
