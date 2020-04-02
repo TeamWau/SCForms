@@ -1,0 +1,9 @@
+#!r6rs ; -*- mode: scheme; coding: utf-8 -*-
+(import (akku format manifest))
+
+(akku-package ("scforms" "1.0.0-alpha.0")
+  (synopsis "XForms bindings for R6RS Scheme")
+  (authors "Erkin B Altunbas")
+  (license "MPL-2.0")
+  (depends ("r6rs-pffi" "^1.2.0") ("chez-srfi" ">=0.0.0-akku <1.0.0"))
+)
