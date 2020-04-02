@@ -4,6 +4,7 @@
 ;;; Rewrite of box.h of XForms v1.4
 
 (library (scforms api box)
+  (export)
   (import (rnrs base)
           (scforms api xforms)
           (scforms misc)

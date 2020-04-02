@@ -2,6 +2,7 @@
 ;; SPDX-License-Identifier: MPL-2.0
 
 (library (scforms misc)
+  (export)
   (import (rnrs base))
 
 ;;;; Helper procedures

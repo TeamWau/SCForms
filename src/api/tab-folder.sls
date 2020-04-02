@@ -4,6 +4,7 @@
 ;;; Rewrite of tabfolder.h of XForms v1.4
 
 (library (scforms api tab-folder)
+  (export)
   (import (rnrs base)
           (scforms api xforms)
           (scforms misc)

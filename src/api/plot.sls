@@ -4,6 +4,7 @@
 ;;; Rewrite of xyplot.h of XForms v1.4
 
 (library (scforms api plot)
+  (export)
   (import (rnrs base)
           (scforms api xforms)
           (scforms misc)

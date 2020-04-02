@@ -4,6 +4,7 @@
 ;;; Rewrite of frame.h of XForms v1.4
 
 (library (scforms api frame)
+  (export)
   (import (rnrs base)
           (scforms api xforms)
           (scforms misc)

@@ -4,6 +4,7 @@
 ;;; Rewrite of cursor.h of XForms v1.4
 
 (library (scforms api cursor)
+  (export)
   (import (rnrs base)
           (scforms api xforms)
           (scforms misc)
