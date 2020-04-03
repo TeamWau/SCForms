@@ -115,7 +115,6 @@
      fl-noborder))
 
 ;;; Box types
-  (define FL-box-type int)
   (define-enum 0
     (fl-no-box
      fl-up-box
@@ -421,7 +420,6 @@
      fl-trigger))
 
 ;;; Resize policies
-  (define FL-resize-t int)
   (define-enum 0
     (fl-resize-none
      fl-resize-x
@@ -429,7 +427,6 @@
   (define fl-resize-all (bitwise-ior fl-resize-x fl-resize-y))
 
 ;;; Keyboard focus
-  (define FL-key int)
   (defines
     (fl-key-normal 1)
     (fl-key-tap 2)
@@ -461,12 +458,11 @@
      (pointer shortcut)
      (int mode)))
 
-  (define FL-menu-entry fl-pup-entry)
+  (define fl-menu-entry fl-pup-entry)
 
 ;;; Fonts
-  (define FL-maxfonts 48)
+  (define fl-maxfonts 48)
 
-  (define FL-text-style int)
   (define-enum -1
     (fl-invalid-style
      fl-normal-style
@@ -601,7 +597,7 @@
      (int w) (int h)
      (int handle-dec-x)
      (int handle-dec-y)
-     (int hotx hoty)
+     (int hotx) (int hoty)
      (double w-hr) (double h-hr)
      (pointer first) (pointer last)
      (pointer focusobj)
