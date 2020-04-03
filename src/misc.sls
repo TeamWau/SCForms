@@ -90,7 +90,7 @@
        (begin
          (define var (call-with-values (thunk body) list))
          (define-values vars (apply values (cdr var)))
-         (define var (car var))))
+         (set! var (car var))))
       ((_ var body)
        (define var (call-with-values (thunk body) list)))))
 
@@ -98,7 +98,7 @@
 ;;; which is overkill for our needs.
   (define-syntax-rule (define-enum n (vals ...))
     (define-values (vals ...)
-      (apply values (range n (length (quote (vals ...)))))))
+      (apply values (range n (+ n (length (quote (vals ...))))))))
 
 ;;; This definition mirrors that of `define-foreign-variable' in PFFI.
   (define-syntax define-foreign-procedure
