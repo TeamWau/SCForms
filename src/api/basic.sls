@@ -12,7 +12,13 @@
           (scforms misc)
           (pffi))
 
-;;;; XForms API as of v1.4
+;;;; Note; Variadic routines were diked out because PFFI does not
+;;;; handle varargs. This is fine, as there are fixed routines for
+;;;; each of them.
+
+;;; Xlib types
+  (define Window unsigned-long)
+  (define Pixmap unsigned-long)
 
 ;;; Constant values
   (defines
@@ -366,27 +372,27 @@
      fl-colour-sentinel))
 
   (define-enum 255
-    (fl-color-chooser-color
-     fl-free-col1
-     fl-free-col2
-     fl-free-col3
-     fl-free-col4
-     fl-free-col5
-     fl-free-col6
-     fl-free-col7
-     fl-free-col8
-     fl-free-col9
-     fl-free-col10
-     fl-free-col11
-     fl-free-col12
-     fl-free-col13
-     fl-free-col14
-     fl-free-col15
-     fl-free-col16))
+    fl-color-chooser-color
+    fl-free-col1
+    fl-free-col2
+    fl-free-col3
+    fl-free-col4
+    fl-free-col5
+    fl-free-col6
+    fl-free-col7
+    fl-free-col8
+    fl-free-col9
+    fl-free-col10
+    fl-free-col11
+    fl-free-col12
+    fl-free-col13
+    fl-free-col14
+    fl-free-col15
+    fl-free-col16)
 
   (define fl-nocolor (greatest-fixnum))
 
-  (define fl-built-in-cols fl-colour-sentinel)
+  (define fl-built-in-cols fl-color-sentinel)
   (define fl-inactive-cols fl-inactive)
 
   (defines
@@ -834,5 +840,171 @@
     pointer fl_addto_group (pointer))
 
 ;;; FL_OBJECT routines
-;;; ...
+  (define-foreign-procedure fl-get-object-objclass xforms
+    int fl_get_object_objclass (pointer))
+  (define-foreign-procedure fl-get-object-type xforms
+    int fl_get_object_type (pointer))
+
+  (define-foreign-procedure fl-set-object-boxtype xforms
+    void fl_set_object_boxtype (pointer int))
+  (define-foreign-procedure fl-get-object-boxtype xforms
+    int fl_get_object_boxtype (pointer))
+
+  (define-foreign-procedure fl-set-object-bw xforms
+    void fl_set_object_bw (pointer int))
+  (define-foreign-procedure fl-get-object-bw xforms
+    int fl_get_object_bw (pointer int))
+
+  (define-foreign-procedure fl-set-object-resize xforms
+    void fl_set_object_resize (pointer unsigned-int))
+  (define-foreign-procedure fl-get-object-resize xforms
+    void fl_get_object_resize (pointer unsigned-int))
+
+  (define-foreign-procedure fl-set-object-gravity xforms
+    void fl_set_object_gravity (pointer unsigned-int unsigned-int))
+  (define-foreign-procedure fl-get-object-gravity xforms
+    void fl_get_object_gravity (pointer unsigned-int unsigned-int))
+
+  (define-foreign-procedure fl-set-object-lsize xforms
+    void fl_set_object_lsize (pointer int))
+  (define-foreign-procedure fl-get-object-lsize xforms
+    int fl_get_object_lsize (pointer))
+
+  (define-foreign-procedure fl-set-object-lstyle xforms
+    void fl_set_object_lstyle (pointer int))
+  (define-foreign-procedure fl-get-object-lstyle xforms
+    int fl_get_object_lstyle (pointer))
+
+  (define-foreign-procedure fl-set-object-lcol xforms
+    void fl_set_object_lcol (pointer fl-color))
+  (define-foreign-procedure fl-get-object-lcol xforms
+    fl-color fl_get_object_lcol (pointer))
+
+  (define-foreign-procedure fl-set-object-return xforms
+    unsigned-int fl_set_object_return (pointer unsigned-int))
+  (define-foreign-procedure fl-get-object-return xforms
+    unsigned-int (pointer))
+
+  (define-foreign-procedure fl-set-object-lalign xforms
+    void fl_set_object_lalign (pointer int))
+  (define-foreign-procedure fl-get-object-lalign xforms
+    int fl_get_object_lalign (pointer))
+
+  (define-foreign-procedure fl-set-object-shortcut xforms
+    void fl_set_object_shortcut (pointer pointer int))
+  (define-foreign-procedure fl-set-object-shortcutkey xforms
+    void fl_set_object_shortcutkey (pointer unsigned-int))
+
+  (define-foreign-procedure fl-set-object-dblbuffer xforms
+    void fl_set_object_dblbuffer (pointer int))
+
+  (define-foreign-procedure fl-set-object-color xforms
+    void fl_set_object_color (pointer fl-color fl-color))
+  (define-foreign-procedure fl-get-object-color xforms
+    void fl_get_object_color (pointer pointer pointer))
+
+  (define-foreign-procedure fl-set-object-label xforms
+    void fl_set_object_label (pointer pointer))
+  ;; (define-foreign-procedure fl-set-object-label-f xforms
+  ;;   void fl_set_object_label_f (pointer pointer ...))
+  (define-foreign-procedure fl-get-object-label xforms
+    pointer fl_get_object_label (pointer))
+
+  (define-foreign-procedure fl-set-object-helper xforms
+    void fl_set_object_helper (pointer pointer))
+  ;; (define-foreign-procedure fl-set-object-helper-f xforms
+  ;;   void fl_set_object_helper_f (pointer pointer ...))
+
+  (define-foreign-procedure fl-set-object-position xforms
+    void fl_set_object_position (pointer fl-coord fl-coord))
+
+  (define-foreign-procedure fl-get-object-size xforms
+    void fl_get_object_size (pointer pointer pointer))
+  (define-foreign-procedure fl-set-object-size xforms
+    void fl_set_object_size (pointer fl-coord fl-coord))
+
+  (define-foreign-procedure fl-set-object-automatic xforms
+    void fl_set_object_automatic (pointer int))
+  (define-foreign-procedure fl-object-is-automatic xforms
+    int fl_object_is_automatic (pointer))
+
+  (define-foreign-procedure fl-draw-object-label xforms
+    void fl_draw_object_label (pointer))
+  (define-foreign-procedure fl-draw-object-label-outside xforms
+    void fl_draw_object_label_outside (pointer))
+
+  (define-foreign-procedure fl-get-object-component xforms
+    pointer fl_get_object_component (pointer int int int))
+
+  (define-foreign-procedure fl-for-all-objects xforms
+    void fl_for_all_objects (pointer pointer pointer))
+
+  (define-foreign-procedure fl-set-object-dblclick xforms
+    void fl_set_object_dblclick (pointer unsigned-long))
+  (define-foreign-procedure fl-get-object-dblclick xforms
+    unsigned-long fl_get_object_dblclick (pointer))
+
+  (define-foreign-procedure fl-set-object-geometry xforms
+    void fl_set_object_geometry (pointer fl-coord fl-coord fl-coord fl-coord))
+  (define-foreign-procedure fl-get-object-geometry xforms
+    void fl_get_object_geometry (pointer pointer pointer pointer pointer))
+
+  (define-foreign-procedure fl-move-object xforms
+    void fl_move_object (pointer fl-coord fl-coord))
+
+  (define-foreign-procedure fl-fit-object-label xforms
+    void fl_fit_object_label (pointer fl-coord fl-coord))
+
+  (define-foreign-procedure fl-get-object-bbox xforms
+    void fl_get_object_bbox (pointer pointer pointer pointer pointer))
+  (define fl-compute-object-geometry fl-get-object-bbox)
+
+  (define-foreign-procedure fl-set-object-prehandler xforms
+    fl-handleptr fl_set_object_prehandler (pointer fl-handleptr))
+  (define-foreign-procedure fl-set-object-callback xforms
+    fl-callbackptr fl_set_object_callback (pointer fl-callbackptr long))
+  (define-foreign-procedure fl-set-object-posthandler xforms
+    fl-handleptr fl_set_object_posthandler (pointer fl-handleptr))
+  (define-foreign-procedure fl-call-object-callback xforms
+    void fl_call_object_callback (pointer))
+
+  (define-foreign-procedure fl-redraw-object xforms
+    void fl_redraw_object (pointer))
+  (define-foreign-procedure fl-show-object xforms
+    void fl_show_object (pointer))
+  (define-foreign-procedure fl-hide-object xforms
+    void fl_hide_object (pointer))
+  (define-foreign-procedure fl-object-is-visible xforms
+    int fl_object_is_visible (pointer))
+
+  (define-foreign-procedure fl-free-object xforms
+    void fl_free_object (pointer))
+  (define-foreign-procedure fl-delete-object xforms
+    void fl_delete_object (pointer))
+
+  (define-foreign-procedure fl-get-object-return-state xforms
+    int fl_get_object_return_state (pointer))
+
+  (define-foreign-procedure fl-trigger-object xforms
+    void fl_trigger_object (pointer))
+  (define-foreign-procedure fl-activate-object xforms
+    void fl_activate_object (pointer))
+  (define-foreign-procedure fl-deactivate-object xforms
+    void fl_deactivate_object (pointer))
+  (define-foreign-procedure fl-object-is-active xforms
+    int fl_object_is_active (pointer))
+
+  (define-foreign-procedure fl-enumerate-fonts xforms
+    int fl_enumerate_fonts (pointer int))
+  (define-foreign-procedure fl-set-font-name xforms
+    int fl_set_font_name (int pointer))
+  ;; (define-foreign-procedure fl-set-font-name-f xforms
+  ;;   int fl_set_font_name_f (int pointer ...))
+  (define-foreign-procedure fl-get-font-name xforms
+    pointer fl_get_font_name (int))
+  (define-foreign-procedure fl-set-font xforms
+    void fl_set_font (int int))
+
+;;;; Free object routines
+  ;; ...
   )
