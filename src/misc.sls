@@ -2,7 +2,9 @@
 ;; SPDX-License-Identifier: MPL-2.0
 
 (library (scforms misc)
-  (export)
+  (export add1 sub1 void* range c-if
+          thunk thunk* comment do-times
+          defines define-enum define-foreign-procedure)
   (import (rnrs base))
 
 ;;;; Helper procedures
@@ -66,5 +68,13 @@
     (define-values (vals ...)
       (apply values (range n (length (quote (vals ...)))))))
 
-  (define-syntax-rule (define-foreign-procedure id object return symbol (args ...))
-    (define id (foreign-procedure object return symbol (args ...)))))
+  (define-syntax define-foreign-procedure
+    (lambda (stx)
+      (define (->scheme-name name)
+        (string->symbol
+         (string-map (lambda (c) (if (char=? c #\_) #\- c))
+                     (string-downcase (symbol->string (syntax->datum name))))))
+      (syntax-case stx ()
+        ((_ object return symbol (args ...))
+         (with-syntax ((scheme-name (datum->syntax stx (->scheme-name #'symbol))))
+           #'(define scheme-name (foreign-procedure object return symbol (args ...)))))))))

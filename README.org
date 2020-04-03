@@ -1,6 +1,7 @@
 * SCForms
   SCForms is a new project aiming to provide a simple GUI library for
-  [[http://www.r6rs.org/][R6RS Scheme]], based on the venerable [[http://xforms-toolkit.org/][XForms toolkit]].
+  [[http://www.r6rs.org/][R6RS Scheme]], based on the venerable [[http://xforms-toolkit.org/][XForms toolkit]] (v1.2.4), using
+  [[https://github.com/ktakashi/r6rs-pffi][R6RS-PFFI]].
 
   The project itself is licensed under [[https://www.mozilla.org/en-US/MPL/2.0/][MPL 2.0]], except for API files,
   which are licensed under [[https://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html][LGPL 2.1+]], the same licence as XForms.
