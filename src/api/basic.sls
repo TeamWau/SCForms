@@ -5,12 +5,10 @@
 
 (library (scforms api basic)
   (export)
-  (import (rnrs base)
-          (rnrs arithmetic bitwise)
-          (rnrs arithmetic fixnums)
+  (import (rnrs)
+          (pffi)
           (scforms api xforms)
-          (scforms misc)
-          (pffi))
+          (scforms misc))
 
 ;;;; Note; Variadic routines were diked out because PFFI does not
 ;;;; handle varargs. This is fine, as there are fixed routines for
@@ -200,7 +198,6 @@
     unsigned-int FL_RETURN_ALWAYS)
 
 ;;; Colour indices
-  (define FL-pd-col int)
   (define-enum 0
     (fl-black
      fl-red
@@ -363,23 +360,23 @@
      fl-colour-sentinel))
 
   (define-enum 255
-    fl-color-chooser-color
-    fl-free-col1
-    fl-free-col2
-    fl-free-col3
-    fl-free-col4
-    fl-free-col5
-    fl-free-col6
-    fl-free-col7
-    fl-free-col8
-    fl-free-col9
-    fl-free-col10
-    fl-free-col11
-    fl-free-col12
-    fl-free-col13
-    fl-free-col14
-    fl-free-col15
-    fl-free-col16)
+    (fl-color-chooser-color
+     fl-free-col1
+     fl-free-col2
+     fl-free-col3
+     fl-free-col4
+     fl-free-col5
+     fl-free-col6
+     fl-free-col7
+     fl-free-col8
+     fl-free-col9
+     fl-free-col10
+     fl-free-col11
+     fl-free-col12
+     fl-free-col13
+     fl-free-col14
+     fl-free-col15
+     fl-free-col16))
 
   (define fl-nocolor (greatest-fixnum))
 
@@ -581,7 +578,8 @@
      (int want-motion)
      (int want-update)))
 
-  (define-foreign-variable xforms pointer FL_EVENT)
+  (define-foreign-variable xforms
+    pointer FL_EVENT)
 
 ;;; Form
   (defines
@@ -859,8 +857,6 @@
 
   (define-foreign-procedure xforms
     unsigned-int fl_set_object_return (pointer unsigned-int))
-  (define-foreign-procedure xforms
-    unsigned-int (pointer))
 
   (define-foreign-procedure xforms
     void fl_set_object_lalign (pointer int))
