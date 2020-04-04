@@ -6,9 +6,13 @@
 (library (scforms api basic)
   (export)
   (import (rnrs)
-          (pffi)
+          (only (pffi)
+                define-foreign-struct
+                define-foreign-variable
+                foreign-procedure)
           (scforms api xforms)
-          (scforms misc))
+          (scforms misc)
+          (scforms define))
 
 ;;;; Note; Variadic routines were diked out because PFFI does not
 ;;;; handle varargs. This is fine, as there are fixed routines for
@@ -30,60 +34,60 @@
     (fl-max-menu-choice-items 128))
 
 ;;; Screen coordinates
-  (define-enum 0
-    (fl-coord-pixel
-     fl-coord-mm
-     fl-coord-point
-     fl-coord-centimm
-     fl-coord-centipoint))
+  (define-c-enum fl-coord-unit
+    fl-coord-pixel
+    fl-coord-mm
+    fl-coord-point
+    fl-coord-centimm
+    fl-coord-centipoint)
 
 ;;; Object classes
-  (define-enum 0
-    (fl-invalid-class
-     fl-button
-     fl-lightbutton
-     fl-roundbutton
-     fl-round3dbutton
-     fl-checkbutton
-     fl-bitmapbutton
-     fl-pixmapbutton
-     fl-bitmap
-     fl-pixmap
-     fl-box
-     fl-text
-     fl-menu
-     fl-chart
-     fl-choice
-     fl-counter
-     fl-slider
-     fl-valslider
-     fl-input
-     fl-browser
-     fl-dial
-     fl-timer
-     fl-clock
-     fl-positioner
-     fl-free
-     fl-xyplot
-     fl-frame
-     fl-labelframe
-     fl-canvas
-     fl-glcanvas
-     fl-tabfolder
-     fl-scrollbar
-     fl-scrollbutton
-     fl-menubar
-     fl-textbox
-     fl-labelbutton
-     fl-combobox
-     fl-imagecanvas
-     fl-thumbwheel
-     fl-colorwheel
-     fl-formbrowser
-     fl-select
-     fl-nmenu
-     fl-spinner
-     fl-tbox))
+  (define-c-enum fl-class
+    fl-invalid-class
+    fl-button
+    fl-lightbutton
+    fl-roundbutton
+    fl-round3dbutton
+    fl-checkbutton
+    fl-bitmapbutton
+    fl-pixmapbutton
+    fl-bitmap
+    fl-pixmap
+    fl-box
+    fl-text
+    fl-menu
+    fl-chart
+    fl-choice
+    fl-counter
+    fl-slider
+    fl-valslider
+    fl-input
+    fl-browser
+    fl-dial
+    fl-timer
+    fl-clock
+    fl-positioner
+    fl-free
+    fl-xyplot
+    fl-frame
+    fl-labelframe
+    fl-canvas
+    fl-glcanvas
+    fl-tabfolder
+    fl-scrollbar
+    fl-scrollbutton
+    fl-menubar
+    fl-textbox
+    fl-labelbutton
+    fl-combobox
+    fl-imagecanvas
+    fl-thumbwheel
+    fl-colorwheel
+    fl-formbrowser
+    fl-select
+    fl-nmenu
+    fl-spinner
+    fl-tbox)
 
   (define fl-begin-group 10000)
   (define fl-end-group 20000)
@@ -94,10 +98,10 @@
   (define fl-max-bw 10)
 
 ;;; Form display properties
-  (defines
-    (fl-place-free 0)
-    (fl-place-mouse 1)
-    (fl-place-center 2)
+  (define-c-enum fl-place
+    fl-place-free
+    fl-place-mouse
+    fl-place-center
     (fl-place-position 4)
     (fl-place-size 8)
     (fl-place-geometry 16)
@@ -109,31 +113,31 @@
     (fl-place-free-center (bitwise-ior fl-place-center fl-free-size)))
 
 ;;; Window decorations
-  (define-enum 1
-    (fl-fullborder
-     fl-transient
-     fl-noborder))
+  (defines
+    (fl-fullborder 1)
+    (fl-transient 2)
+    (fl-noborder 3))
 
 ;;; Box types
-  (define-enum 0
-    (fl-no-box
-     fl-up-box
-     fl-down-box
-     fl-border-box
-     fl-shadow-box
-     fl-frame-box
-     fl-rounded-box
-     fl-embossed-box
-     fl-flat-box
-     fl-rflat-box
-     fl-rshadow-box
-     fl-oval-box
-     fl-rounded3d-upbox
-     fl-rounded3d-downbox
-     fl-oval3d-upbox
-     fl-oval3d-downbox
-     fl-oval3d-framebox
-     fl-oval3d-embossedbox))
+  (define-c-enum fl-box-type
+    fl-no-box
+    fl-up-box
+    fl-down-box
+    fl-border-box
+    fl-shadow-box
+    fl-frame-box
+    fl-rounded-box
+    fl-embossed-box
+    fl-flat-box
+    fl-rflat-box
+    fl-rshadow-box
+    fl-oval-box
+    fl-rounded3d-upbox
+    fl-rounded3d-downbox
+    fl-oval3d-upbox
+    fl-oval3d-downbox
+    fl-oval3d-framebox
+    fl-oval3d-embossedbox)
 
   (define (fl-is-upbox t)
     (c-if (memq t (list fl-up-box fl-oval3d-upbox fl-rounded3d-upbox))))
@@ -146,10 +150,10 @@
      ((= t fl-oval3d-upbox) fl-oval3d-downbox)))
 
 ;;; Text alignment
-  (defines
-    (fl-align-center 0)
-    (fl-align-top 1)
-    (fl-align-bottom 2)
+  (define-c-enum fl-align
+    fl-align-center
+    fl-align-top
+    fl-align-bottom
     (fl-align-left 4)
     (fl-align-right 8)
     (fl-align-left-top (bitwise-ior fl-align-left fl-align-top))
@@ -169,12 +173,12 @@
     int fl_to_outside_lalign (int))
 
 ;;; Mouse buttons
-  (define-enum 1
-    (fl-mbutton1
-     fl-mbutton2
-     fl-mbutton3
-     fl-mbutton4
-     fl-mbutton5))
+  (defines
+    (fl-mbutton1 1)
+    (fl-mbutton2 2)
+    (fl-mbutton3 3)
+    (fl-mbutton4 4)
+    (fl-mbutton5 5))
 
   (defines
     (fl-left-mouse fl-mbutton1)
@@ -193,191 +197,187 @@
     (fl-return-deselection 16)
     (fl-return-triggered 1024))
 
-  (define-foreign-variable xforms
-    unsigned-int FL_RETURN_ALWAYS)
+  (define fl-return-always (bitwise-not fl-return-end-changed))
 
 ;;; Colour indices
-  (define-enum 0
-    (fl-black
-     fl-red
-     fl-green
-     fl-yellow
-     fl-blue
-     fl-magenta
-     fl-cyan
-     fl-white
-     fl-tomato
-     fl-indianred
-     fl-slateblue
-     fl-col1
-     fl-right-bcol
-     fl-bottom-bcol
-     fl-top-bcol
-     fl-left-bcol
-     fl-mcol
-     fl-inactive
-     fl-palegreen
-     fl-darkgold
-     fl-orchid
-     fl-darkcyan
-     fl-darktomato
-     fl-wheat
-     fl-darkorange
-     fl-deeppink
-     fl-chartreuse
-     fl-darkviolet
-     fl-springgreen
-     fl-dodgerblue
-     fl-lighter-col1
-     fl-darker-col1
-     fl-aliceblue
-     fl-antiquewhite
-     fl-aqua
-     fl-aquamarine
-     fl-azure
-     fl-beige
-     fl-bisque
-     fl-blanchedalmond
-     fl-blueviolet
-     fl-brown
-     fl-burlywood
-     fl-cadetblue
-     fl-chocolate
-     fl-coral
-     fl-cornflowerblue
-     fl-cornsilk
-     fl-crimson
-     fl-darkblue
-     fl-darkgoldenrod
-     fl-darkgray
-     fl-darkgreen
-     fl-darkgrey
-     fl-darkkhaki
-     fl-darkmagenta
-     fl-darkolivegreen
-     fl-darkorchid
-     fl-darkred
-     fl-darksalmon
-     fl-darkseagreen
-     fl-darkslateblue
-     fl-darkslategray
-     fl-darkslategrey
-     fl-darkturquoise
-     fl-deepskyblue
-     fl-dimgray
-     fl-dimgrey
-     fl-firebrick
-     fl-floralwhite
-     fl-forestgreen
-     fl-fuchsia
-     fl-gainsboro
-     fl-ghostwhite
-     fl-gold
-     fl-goldenrod
-     fl-gray
-     fl-greenyellow
-     fl-grey
-     fl-honeydew
-     fl-hotpink
-     fl-indigo
-     fl-ivory
-     fl-khaki
-     fl-lavender
-     fl-lavenderblush
-     fl-lawngreen
-     fl-lemonchiffon
-     fl-lightblue
-     fl-lightcoral
-     fl-lightcyan
-     fl-lightgoldenrodyellow
-     fl-lightgray
-     fl-lightgreen
-     fl-lightgrey
-     fl-lightpink
-     fl-lightsalmon
-     fl-lightseagreen
-     fl-lightskyblue
-     fl-lightslategray
-     fl-lightslategrey
-     fl-lightsteelblue
-     fl-lightyellow
-     fl-lime
-     fl-limegreen
-     fl-linen
-     fl-maroon
-     fl-mediumaquamarine
-     fl-mediumblue
-     fl-mediumorchid
-     fl-mediumpurple
-     fl-mediumseagreen
-     fl-mediumslateblue
-     fl-mediumspringgreen
-     fl-mediumturquoise
-     fl-mediumvioletred
-     fl-midnightblue
-     fl-mintcream
-     fl-mistyrose
-     fl-moccasin
-     fl-navajowhite
-     fl-navy
-     fl-oldlace
-     fl-olive
-     fl-olivedrab
-     fl-orange
-     fl-orangered
-     fl-palegoldenrod
-     fl-paleturquoise
-     fl-palevioletred
-     fl-papayawhip
-     fl-peachpuff
-     fl-peru
-     fl-pink
-     fl-plum
-     fl-powderblue
-     fl-purple
-     fl-rosybrown
-     fl-royalblue
-     fl-saddlebrown
-     fl-salmon
-     fl-sandybrown
-     fl-seagreen
-     fl-seashell
-     fl-sienna
-     fl-silver
-     fl-skyblue
-     fl-slategray
-     fl-slategrey
-     fl-snow
-     fl-steelblue
-     fl-tan
-     fl-teal
-     fl-thistle
-     fl-turquoise
-     fl-violet
-     fl-whitesmoke
-     fl-yellowgreen
-     fl-colour-sentinel))
-
-  (define-enum 255
-    (fl-color-chooser-color
-     fl-free-col1
-     fl-free-col2
-     fl-free-col3
-     fl-free-col4
-     fl-free-col5
-     fl-free-col6
-     fl-free-col7
-     fl-free-col8
-     fl-free-col9
-     fl-free-col10
-     fl-free-col11
-     fl-free-col12
-     fl-free-col13
-     fl-free-col14
-     fl-free-col15
-     fl-free-col16))
-
-  (define fl-nocolor (greatest-fixnum))
+  (define-c-enum fl-pd-col
+    fl-black
+    fl-red
+    fl-green
+    fl-yellow
+    fl-blue
+    fl-magenta
+    fl-cyan
+    fl-white
+    fl-tomato
+    fl-indianred
+    fl-slateblue
+    fl-col1
+    fl-right-bcol
+    fl-bottom-bcol
+    fl-top-bcol
+    fl-left-bcol
+    fl-mcol
+    fl-inactive
+    fl-palegreen
+    fl-darkgold
+    fl-orchid
+    fl-darkcyan
+    fl-darktomato
+    fl-wheat
+    fl-darkorange
+    fl-deeppink
+    fl-chartreuse
+    fl-darkviolet
+    fl-springgreen
+    fl-dodgerblue
+    fl-lighter-col1
+    fl-darker-col1
+    fl-aliceblue
+    fl-antiquewhite
+    fl-aqua
+    fl-aquamarine
+    fl-azure
+    fl-beige
+    fl-bisque
+    fl-blanchedalmond
+    fl-blueviolet
+    fl-brown
+    fl-burlywood
+    fl-cadetblue
+    fl-chocolate
+    fl-coral
+    fl-cornflowerblue
+    fl-cornsilk
+    fl-crimson
+    fl-darkblue
+    fl-darkgoldenrod
+    fl-darkgray
+    fl-darkgreen
+    fl-darkgrey
+    fl-darkkhaki
+    fl-darkmagenta
+    fl-darkolivegreen
+    fl-darkorchid
+    fl-darkred
+    fl-darksalmon
+    fl-darkseagreen
+    fl-darkslateblue
+    fl-darkslategray
+    fl-darkslategrey
+    fl-darkturquoise
+    fl-deepskyblue
+    fl-dimgray
+    fl-dimgrey
+    fl-firebrick
+    fl-floralwhite
+    fl-forestgreen
+    fl-fuchsia
+    fl-gainsboro
+    fl-ghostwhite
+    fl-gold
+    fl-goldenrod
+    fl-gray
+    fl-greenyellow
+    fl-grey
+    fl-honeydew
+    fl-hotpink
+    fl-indigo
+    fl-ivory
+    fl-khaki
+    fl-lavender
+    fl-lavenderblush
+    fl-lawngreen
+    fl-lemonchiffon
+    fl-lightblue
+    fl-lightcoral
+    fl-lightcyan
+    fl-lightgoldenrodyellow
+    fl-lightgray
+    fl-lightgreen
+    fl-lightgrey
+    fl-lightpink
+    fl-lightsalmon
+    fl-lightseagreen
+    fl-lightskyblue
+    fl-lightslategray
+    fl-lightslategrey
+    fl-lightsteelblue
+    fl-lightyellow
+    fl-lime
+    fl-limegreen
+    fl-linen
+    fl-maroon
+    fl-mediumaquamarine
+    fl-mediumblue
+    fl-mediumorchid
+    fl-mediumpurple
+    fl-mediumseagreen
+    fl-mediumslateblue
+    fl-mediumspringgreen
+    fl-mediumturquoise
+    fl-mediumvioletred
+    fl-midnightblue
+    fl-mintcream
+    fl-mistyrose
+    fl-moccasin
+    fl-navajowhite
+    fl-navy
+    fl-oldlace
+    fl-olive
+    fl-olivedrab
+    fl-orange
+    fl-orangered
+    fl-palegoldenrod
+    fl-paleturquoise
+    fl-palevioletred
+    fl-papayawhip
+    fl-peachpuff
+    fl-peru
+    fl-pink
+    fl-plum
+    fl-powderblue
+    fl-purple
+    fl-rosybrown
+    fl-royalblue
+    fl-saddlebrown
+    fl-salmon
+    fl-sandybrown
+    fl-seagreen
+    fl-seashell
+    fl-sienna
+    fl-silver
+    fl-skyblue
+    fl-slategray
+    fl-slategrey
+    fl-snow
+    fl-steelblue
+    fl-tan
+    fl-teal
+    fl-thistle
+    fl-turquoise
+    fl-violet
+    fl-whitesmoke
+    fl-yellowgreen
+    fl-colour-sentinel
+    (fl-color-chooser-color 255)
+    fl-free-col1
+    fl-free-col2
+    fl-free-col3
+    fl-free-col4
+    fl-free-col5
+    fl-free-col6
+    fl-free-col7
+    fl-free-col8
+    fl-free-col9
+    fl-free-col10
+    fl-free-col11
+    fl-free-col12
+    fl-free-col13
+    fl-free-col14
+    fl-free-col15
+    fl-free-col16
+    fl-nocolor (greatest-fixnum))
 
   (define fl-built-in-cols fl-color-sentinel)
   (define fl-inactive-cols fl-inactive)
@@ -392,44 +392,44 @@
     (fl-lcol fl-black))
 
 ;;; Reacted events
-  (define-enum 0
-    (fl-noevent
-     fl-draw
-     fl-push
-     fl-release
-     fl-enter
-     fl-leave
-     fl-motion
-     fl-focus
-     fl-unfocus
-     fl-keypress
-     fl-update
-     fl-step
-     fl-shortcut
-     fl-freemem
-     fl-other
-     fl-drawlabel
-     fl-dblclick
-     fl-trplclick
-     fl-attrib
-     fl-keyrelease
-     fl-ps
-     fl-moveorigin
-     fl-resized
-     fl-paste
-     fl-trigger))
+  (define-c-enum fl-events
+    fl-noevent
+    fl-draw
+    fl-push
+    fl-release
+    fl-enter
+    fl-leave
+    fl-motion
+    fl-focus
+    fl-unfocus
+    fl-keypress
+    fl-update
+    fl-step
+    fl-shortcut
+    fl-freemem
+    fl-other
+    fl-drawlabel
+    fl-dblclick
+    fl-trplclick
+    fl-attrib
+    fl-keyrelease
+    fl-ps
+    fl-moveorigin
+    fl-resized
+    fl-paste
+    fl-trigger)
 
 ;;; Resize policies
-  (define-enum 0
-    (fl-resize-none
-     fl-resize-x
-     fl-resize-y))
-  (define fl-resize-all (bitwise-ior fl-resize-x fl-resize-y))
+  (define-c-enum fl-resize-t
+    fl-resize-none
+    fl-resize-x
+    fl-resize-y
+    (fl-resize-all (bitwise-ior fl-resize-x fl-resize-y)))
 
 ;;; Keyboard focus
-  (defines
-    (fl-key-normal 1)
-    (fl-key-tap 2)
+  (define-c-enum fl-key
+    fl-key-normal
+    fl-key-tab
     (fl-key-special 4)
     (fl-key-all 7))
 
@@ -448,7 +448,6 @@
     (fl-pup-check 4)
     (fl-pup-radio 8)
     (fl-pup-gray fl-pup-grey)
-    (fl-pup-toggle fl-pup-box)
     (fl-pup-inactive fl-pup-grey))
 
   (define-foreign-struct fl-pup-entry
@@ -463,29 +462,28 @@
 ;;; Fonts
   (define fl-maxfonts 48)
 
-  (define-enum -1
-    (fl-invalid-style
-     fl-normal-style
-     fl-bold-style
-     fl-italic-style
-     fl-bolditalic-style
+  (define-c-enum fl-text-style
+    (fl-invalid-style -1)
+    fl-normal-style
+    fl-bold-style
+    fl-italic-style
+    fl-bolditalic-style
 
-     fl-fixed-style
-     fl-fixedbold-style
-     fl-fixeditalic-style
-     fl-fixedbolditalic-style
+    fl-fixed-style
+    fl-fixedbold-style
+    fl-fixeditalic-style
+    fl-fixedbolditalic-style
 
-     fl-times-style
-     fl-timesbold-style
-     fl-timesitalic-style
-     fl-timesbolditalic-style
+    fl-times-style
+    fl-timesbold-style
+    fl-timesitalic-style
+    fl-timesbolditalic-style
 
-     fl-misc-style
-     fl-miscbold-style
-     fl-miscitalic-style
-     fl-symbol-style))
+    fl-misc-style
+    fl-miscbold-style
+    fl-miscitalic-style
+    fl-symbol-style
 
-  (defines
     (fl-shadow-style (bitwise-arithmetic-shift-left 1 9))
     (fl-engraved-style (bitwise-arithmetic-shift-left 1 10))
     (fl-embossed-style (bitwise-arithmetic-shift-left 1 11)))
@@ -595,8 +593,7 @@
      (unsigned-long window)
      (int x) (int y)
      (int w) (int h)
-     (int handle-dec-x)
-     (int handle-dec-y)
+     (int handle-dec-x) (int handle-dec-y)
      (int hotx) (int hoty)
      (double w-hr) (double h-hr)
      (pointer first) (pointer last)
@@ -663,9 +660,10 @@
     void fl_signal_caught (int))
   (define-foreign-procedure xforms
     void fl_app_signal_direct (int))
-  (define-enum 0
-    (fl-input-end-event-classic
-     fl-input-end-event-always))
+
+  (defines
+    (fl-input-end-event-classic 0)
+    (fl-input-end-event-always 1))
 
   (define-foreign-procedure xforms
     int fl_input_end_return_handling (int))
