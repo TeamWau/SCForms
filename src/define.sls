@@ -22,14 +22,13 @@
         ((_ enum val (id new-val) rest ...)
          #'(define-c-enum-aux enum new-val id rest ...))
         ((_ enum val id rest ...)
-         (with-syntax ((inc (datum->syntax #'val (add1 (syntax->datum #'val))))
-                       (name (datum->syntax #'id (string->symbol
+         (with-syntax ((name (datum->syntax #'id (string->symbol
                                                   (string-append
                                                    (symbol->string (syntax->datum #'enum)) ":"
                                                    (symbol->string (syntax->datum #'id)))))))
            #'(begin
                (define name val)
-               (define-c-enum-aux enum inc rest ...)))))))
+               (define-c-enum-aux enum (add1 val) rest ...)))))))
 
 
   (define-syntax define-c-enum
