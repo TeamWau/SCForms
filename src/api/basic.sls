@@ -6,10 +6,7 @@
 (library (scforms api basic)
   (export)
   (import (rnrs)
-          (only (pffi)
-                define-foreign-struct
-                define-foreign-variable
-                foreign-procedure)
+          (for (pffi) run expand)
           (scforms api xforms)
           (scforms misc)
           (scforms define))
@@ -34,6 +31,8 @@
     (fl-max-menu-choice-items 128))
 
 ;;; Screen coordinates
+  (define fl-coord int)
+
   (define-c-enum fl-coord-unit
     fl-coord-pixel
     fl-coord-mm
@@ -89,11 +88,12 @@
     fl-spinner
     fl-tbox)
 
-  (define fl-begin-group 10000)
-  (define fl-end-group 20000)
+  ;; Renamed to avoid clash with fl_end_group()
+  (define fl-begin-group* 10000)
+  (define fl-end-group* 20000)
 
   (define fl-user-class-start 1001)
-  (define fl-user-class-start 9999)
+  (define fl-user-class-end 9999)
 
   (define fl-max-bw 10)
 
@@ -195,11 +195,12 @@
     (fl-return-end-changed 4)
     (fl-return-selection 8)
     (fl-return-deselection 16)
-    (fl-return-triggered 1024))
-
-  (define fl-return-always (bitwise-not fl-return-end-changed))
+    (fl-return-triggered 1024)
+    (fl-return-always (bitwise-not fl-return-end-changed)))
 
 ;;; Colour indices
+  ;; Renamed to avoid clash with fl_color()
+  (define fl-color-t unsigned-long)
   (define-c-enum fl-pd-col
     fl-black
     fl-red
@@ -377,7 +378,7 @@
     fl-free-col14
     fl-free-col15
     fl-free-col16
-    fl-nocolor (greatest-fixnum))
+    (fl-nocolor (greatest-fixnum)))
 
   (define fl-built-in-cols fl-color-sentinel)
   (define fl-inactive-cols fl-inactive)
@@ -450,6 +451,7 @@
     (fl-pup-gray fl-pup-grey)
     (fl-pup-inactive fl-pup-grey))
 
+  (define fl-pup-cb pointer)
   (define-foreign-struct fl-pup-entry
     (fields
      (pointer text)
@@ -572,6 +574,16 @@
      (int want-motion)
      (int want-update)))
 
+  (defines
+    (fl-formcallbackptr pointer)
+    (fl-callbackptr pointer)
+    (fl-raw-tallback pointer)
+    (fl-form-atclose pointer)
+    (fl-form-atdeactivate pointer)
+    (fl-form-atactivate pointer)
+    (fl-handleptr pointer)
+    (fl-error-func pointer))
+
   (define-foreign-variable xforms
     pointer FL_EVENT)
 
@@ -633,7 +645,6 @@
      (pointer attach-data)
      (int in-redraw)))
 
-;;; IO
   (define-foreign-struct fd-any
     (fields
      (pointer form)
@@ -641,10 +652,13 @@
      (pointer cdata)
      (long ldata)))
 
+;;; IO
   (defines
     (fl-read 1)
     (fl-write 2)
     (fl-except 4))
+
+  (define fl-io-callback pointer)
 
   (define-foreign-procedure xforms
     void fl_add_io_callback (int unsigned-int pointer pointer))
@@ -652,6 +666,8 @@
     void fl_remove_io_callback (int unsigned-int pointer))
 
 ;;; Signals
+  (define fl-signal-handler pointer)
+
   (define-foreign-procedure xforms
     void fl_add_signal_callback (int pointer pointer))
   (define-foreign-procedure xforms
@@ -669,6 +685,8 @@
     int fl_input_end_return_handling (int))
 
 ;;; Timeouts
+  (define fl-timeout-callback pointer)
+
   (define-foreign-procedure xforms
     int fl_add_timeout (long pointer pointer))
   (define-foreign-procedure xforms
@@ -1005,6 +1023,8 @@
   (define-foreign-procedure xforms
     void fl_draw_box (int int int int int unsigned-long int))
 
+  (define fl-drawptr pointer)
+
   (define-foreign-procedure xforms
     int fl_add_symbol (pointer pointer int))
   (define-foreign-procedure xforms
@@ -1041,6 +1061,8 @@
   (define-foreign-procedure xforms
     void fl_show_errors (int))
 
+  (define fl-fscb pointer)
+
 ;;; New object routines
   (define-foreign-variable xforms
     pointer fl_current_form)
@@ -1064,6 +1086,11 @@
 
   (define-foreign-procedure xforms
     void fl_set_scrollbar_type (int))
+  (define (fl-set-thinscrollbar t)
+    (fl-set-scrollbar-type
+     (if (zero? t)
+         fl-normal-scrollbar
+         fl-thin-scrollbar)))
 
   (define-foreign-procedure xforms
     void fl_flip_yorigin (void))

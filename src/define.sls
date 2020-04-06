@@ -4,16 +4,14 @@
 (library (scforms define)
   (export defines define-c-enum define-foreign-procedure)
   (import (rnrs)
-          (scforms misc)
-          (for (scforms misc) expand))
+          (for (pffi) run expand)
+          (for (scforms misc) run expand))
 
   (define-syntax defines
     (syntax-rules ()
-      ((_) (values))
-      ((_ (id val) (id* val*) ...)
+      ((_ (id val) ...)
        (begin
-         (define id val)
-         (defines (id* val*) ...)))))
+         (define id val) ...))))
 
   (define-syntax define-c-enum-aux
     (lambda (stx)
@@ -26,10 +24,9 @@
                                                   (string-append
                                                    (symbol->string (syntax->datum #'enum)) ":"
                                                    (symbol->string (syntax->datum #'id)))))))
-           #'(begin
-               (define name val)
-               (define-c-enum-aux enum (add1 val) rest ...)))))))
-
+                      #'(begin
+                          (define name val)
+                          (define-c-enum-aux enum (add1 val) rest ...)))))))
 
   (define-syntax define-c-enum
     (syntax-rules ()
@@ -52,7 +49,7 @@
       (syntax-case stx ()
         ((_ object return symbol (args ...))
          (with-syntax ((scheme-name
-                        (datum->syntax stx (c-name->scheme-name #'symbol))))
+                        (datum->syntax #'symbol (c-name->scheme-name #'symbol))))
                       (syntax
                        (define scheme-name
                          (foreign-procedure object return symbol (args ...))))))))))
