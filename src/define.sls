@@ -16,17 +16,34 @@
   (define-syntax define-c-enum-aux
     (lambda (stx)
       (syntax-case stx ()
-        ((_ enum val) #'(define enum int))
+        ((_ enum val)
+         #'(define enum int))
         ((_ enum val (id new-val) rest ...)
          #'(define-c-enum-aux enum new-val id rest ...))
         ((_ enum val id rest ...)
+         ;; At times like this I wish I had Racket's `format-id'...
          (with-syntax ((name (datum->syntax #'id (string->symbol
                                                   (string-append
                                                    (symbol->string (syntax->datum #'enum)) ":"
                                                    (symbol->string (syntax->datum #'id)))))))
-                      #'(begin
-                          (define name val)
-                          (define-c-enum-aux enum (add1 val) rest ...)))))))
+           #'(begin
+               (define name val)
+               (define-c-enum-aux enum (add1 val) rest ...)))))))
+
+  #|
+  (define-c-enum type
+    foo
+    bar
+    (baz 128)
+    quux)
+  expands to
+  (begin
+    (define type:foo 0)
+    (define type:bar 1)
+    (define type:baz 128)
+    (define type:quux 129)
+    (define type int))
+  |#
 
   (define-syntax define-c-enum
     (syntax-rules ()
