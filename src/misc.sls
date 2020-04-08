@@ -51,9 +51,9 @@
       ((_ val)
        val)
       ((_ val (proc args ...) rest ...)
-       (-> (proc args ... val) rest ...))
+       (->> (proc args ... val) rest ...))
       ((_ val proc rest ...)
-       (-> (proc val) rest ...))))
+       (->> (proc val) rest ...))))
 
   (define-syntax do-to
     (syntax-rules ()
@@ -62,7 +62,9 @@
       ((_ val (proc! args ...) rest ...)
        (begin
          (proc! val args ...)
-         (do-to val rest ...)))))
+         (do-to val rest ...)))
+      ((_ val proc! rest ...)
+       (do-to val (proc!) rest ...))))
 
   (define-syntax define-syntax-rule
     (syntax-rules ()
